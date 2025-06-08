@@ -6,14 +6,40 @@
 # using features like temperature, rainfall, population density, and healthcare access.
 
 # Import libraries
+import kagglehub
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-import matplotlib.pyplot as plt
-import seaborn as sns
+import os
 
-# Set random seed for reproducibility
+# Set random seed
 np.random.seed(42)
 
-print("Environment Setup Complete: Ready for SDG 3 Malaria Prediction")
+# --- Load Kaggle Dataset ---
+kaggle_path = kagglehub.dataset_download("lydia70/malaria-in-africa")
+print("Kaggle path:", kaggle_path)
+kaggle_files = os.listdir(kaggle_path)
+print("Kaggle files:", kaggle_files)
+
+csv_file = os.path.join(kaggle_path, 'Dataset_malaria.csv')  # Update filename
+malaria_data = pd.read_csv(csv_file)
+
+# --- Load World Bank Data ---
+wb_data = pd.read_csv('data/health_expenditure.csv', skiprows=4)
+
+# Reshape
+wb_data_melted = pd.melt(
+    wb_data,
+    id_vars=['Country Name', 'Country Code'],
+    value_vars=[str(year) for year in range(2010, 2023)],
+    var_name='Year',
+    value_name='Health_Expenditure'
+)
+wb_data_melted['Year'] = wb_data_melted['Year'].astype(int)
+
+# --- Placeholder for NOAA GSOM ---
+# Add Step 2 code here after running find_stations.py
+
+# Inspect Kaggle
+print("\nMalaria Dataset Preview:")
+print(malaria_data.head())
+print("\nMalaria Columns:", list(malaria_data.columns))
